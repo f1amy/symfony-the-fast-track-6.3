@@ -1,7 +1,7 @@
 FROM php:8.2-fpm-alpine
 
 COPY --from=mlocati/php-extension-installer:latest /usr/bin/install-php-extensions /usr/local/bin/
-RUN install-php-extensions zip redis amqp xsl gd intl pdo_pgsql
+RUN install-php-extensions zip redis amqp xsl gd intl pdo_pgsql xdebug opcache
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
