@@ -1,4 +1,7 @@
-.PHONY: build up down start stop restart recreate logs exec-app
+.PHONY: init build up down start stop restart recreate logs exec-app
+
+init:
+	cp -u .env.local.example .env.local
 
 build:
 	docker compose build
