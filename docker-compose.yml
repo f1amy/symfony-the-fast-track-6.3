@@ -1,6 +1,15 @@
-version: '3'
+name: symfony-the-fast-track-63
 
 services:
+  app:
+    image: the-fast-track/app
+    build: .docker/php
+    command: symfony server:start --no-tls
+    ports:
+      - '80:8000'
+    volumes:
+      - ./:/var/www/html
+
 ###> doctrine/doctrine-bundle ###
   database:
     image: postgres:${POSTGRES_VERSION:-15}-alpine
