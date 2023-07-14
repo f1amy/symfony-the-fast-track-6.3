@@ -30,7 +30,7 @@ class Comment
     #[ORM\JoinColumn(nullable: false)]
     private ?Conference $conference = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $photoFilename = null;
 
     public function __toString(): string
