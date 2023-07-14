@@ -1,6 +1,10 @@
 version: '3'
 
 services:
+  app:
+    ports:
+      - '80:8000'
+
 ###> doctrine/doctrine-bundle ###
   database:
     ports:
