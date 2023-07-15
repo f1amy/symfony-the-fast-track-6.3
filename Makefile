@@ -6,6 +6,7 @@ init:
 init-tests:
 	docker compose exec app symfony console doctrine:database:create --if-not-exists --env=test
 	docker compose exec app symfony console doctrine:migrations:migrate -n --env=test
+	docker compose exec app symfony console doctrine:fixtures:load -n --env=test
 
 build:
 	docker compose build
