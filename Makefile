@@ -1,7 +1,11 @@
-.PHONY: init build up down start stop restart recreate logs exec-app migration migrate
+.PHONY: init init-tests build up down start stop restart recreate logs exec-app composer migration migrate tests
 
 init:
 	cp -u .env.local.example .env.local
+
+init-tests:
+	docker compose exec app symfony console doctrine:database:create --if-not-exists --env=test
+	docker compose exec app symfony console doctrine:migrations:migrate -n --env=test
 
 build:
 	docker compose build
@@ -29,8 +33,14 @@ logs:
 exec-app:
 	docker compose exec app ash
 
+composer:
+	docker compose exec app symfony composer install
+
 migration:
 	docker compose exec app symfony console make:migration
 
 migrate:
-	docker compose exec app symfony console doctrine:migrations:migrate
+	docker compose exec app symfony console doctrine:migrations:migrate -n
+
+tests: init-tests
+	docker compose exec app php bin/phpunit
