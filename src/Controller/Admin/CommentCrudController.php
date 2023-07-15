@@ -43,16 +43,17 @@ class CommentCrudController extends AbstractCrudController
         yield TextField::new('photoFilename')
             ->onlyOnIndex();
 
-        $createdAt = DateTimeField::new('createdAt')
-            ->setFormTypeOptions([
-                'years' => range(date('Y'), date('Y') + 5),
-                'widget' => 'single_text',
-            ]);
-
         if (Crud::PAGE_EDIT === $pageName) {
+            $currentYear = (int) date('Y');
+            $yearsRange = range($currentYear, $currentYear + 5);
+
+            $createdAt = DateTimeField::new('createdAt')
+                ->setFormTypeOptions([
+                    'years' => $yearsRange,
+                    'widget' => 'single_text',
+                ]);
+
             yield $createdAt->setFormTypeOption('disabled', true);
-        } else {
-            yield $createdAt;
         }
     }
 }
