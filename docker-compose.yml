@@ -3,7 +3,6 @@ name: symfony-the-fast-track-63
 services:
   app:
     image: the-fast-track/app
-    build: .docker/php
     command: symfony server:start --no-tls
     volumes:
       - ./:/var/www/html
@@ -21,6 +20,11 @@ services:
       # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
       # - ./docker/db/data:/var/lib/postgresql/data:rw
 ###< doctrine/doctrine-bundle ###
+
+###> symfony/mailer ###
+  mailer:
+    image: schickling/mailcatcher
+###< symfony/mailer ###
 
 volumes:
 ###> doctrine/doctrine-bundle ###
