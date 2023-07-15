@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20230714205334 extends AbstractMigration
+final class Version20230715103943 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -20,12 +20,13 @@ final class Version20230714205334 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE comment ALTER photo_filename DROP NOT NULL');
+        $this->addSql('CREATE TABLE sessions (sess_id VARCHAR(128) NOT NULL, sess_data BYTEA NOT NULL, sess_lifetime INT NOT NULL, sess_time INT NOT NULL, PRIMARY KEY(sess_id))');
+        $this->addSql('CREATE INDEX sess_lifetime_idx ON sessions (sess_lifetime)');
     }
 
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE comment ALTER photo_filename SET NOT NULL');
+        $this->addSql('DROP TABLE sessions');
     }
 }
