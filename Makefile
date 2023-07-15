@@ -1,4 +1,4 @@
-.PHONY: init build up down start stop restart recreate logs exec-app
+.PHONY: init build up down start stop restart recreate logs exec-app migration migrate
 
 init:
 	cp -u .env.local.example .env.local
@@ -29,7 +29,7 @@ logs:
 exec-app:
 	docker compose exec app ash
 
-make-migration:
+migration:
 	docker compose exec app symfony console make:migration
 
 migrate:
