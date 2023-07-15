@@ -13,24 +13,14 @@ use Symfony\Component\Routing\Annotation\Route;
 class ConferenceController extends AbstractController
 {
     #[Route('/', name: 'homepage')]
-    public function index(ConferenceRepository $conferenceRepository): Response
+    public function index(): Response
     {
-        $conferences = $conferenceRepository->findAll();
-
-        return $this->render('conference/index.html.twig', [
-            'conferences' => $conferences,
-        ]);
+        return $this->render('conference/index.html.twig');
     }
 
     #[Route('/conference/{id}', name: 'conference')]
-    public function show(
-        Request $request,
-        Conference $conference,
-        CommentRepository $commentRepository,
-        ConferenceRepository $conferenceRepository
-    ): Response {
-        $conferences = $conferenceRepository->findAll();
-
+    public function show(Request $request, Conference $conference, CommentRepository $commentRepository): Response
+    {
         $offset = max(0, $request->query->getInt('offset', 0));
         $commentPaginator = $commentRepository->getCommentPaginator($conference, $offset);
 
@@ -38,7 +28,6 @@ class ConferenceController extends AbstractController
         $next = min(count($commentPaginator), $offset + CommentRepository::PAGINATOR_PER_PAGE);
 
         return $this->render('conference/show.html.twig', [
-            'conferences' => $conferences,
             'conference' => $conference,
             'comments' => $commentPaginator,
             'previous' => $previous,
