@@ -28,3 +28,9 @@ logs:
 
 exec-app:
 	docker compose exec app ash
+
+make-migration:
+	docker compose exec app symfony console make:migration
+
+migrate:
+	docker compose exec app symfony console doctrine:migrations:migrate
