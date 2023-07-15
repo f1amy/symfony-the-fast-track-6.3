@@ -7,6 +7,8 @@ use App\Entity\Comment;
 use App\Entity\Conference;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Faker\Factory;
+use Faker\Generator;
 use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
 
 class AppFixtures extends Fixture
@@ -18,24 +20,15 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        $amsterdam = new Conference();
-        $amsterdam->setCity('Amsterdam');
-        $amsterdam->setYear('2019');
-        $amsterdam->setIsInternational(true);
-        $manager->persist($amsterdam);
+        $faker = Factory::create();
 
-        $paris = new Conference();
-        $paris->setCity('Paris');
-        $paris->setYear('2020');
-        $paris->setIsInternational(false);
-        $manager->persist($paris);
+        $numberOfConferences = $faker->numberBetween(20, 30);
 
-        $comment1 = new Comment();
-        $comment1->setConference($amsterdam);
-        $comment1->setAuthor('Fabien');
-        $comment1->setEmail('fabien@example.com');
-        $comment1->setText('This was a great conference.');
-        $manager->persist($comment1);
+        for ($i = 0; $i < $numberOfConferences; $i++) {
+            $conference = $this->createConference($manager, $faker);
+
+            $manager->persist($conference);
+        }
 
         $admin = new Admin();
         $admin->setRoles(['ROLE_ADMIN']);
@@ -44,5 +37,36 @@ class AppFixtures extends Fixture
         $manager->persist($admin);
 
         $manager->flush();
+    }
+
+    private function createConference(ObjectManager $manager, Generator $faker): Conference
+    {
+        $conference = new Conference();
+
+        $conference->setCity($faker->city());
+        $conference->setYear($faker->year());
+        $conference->setIsInternational($faker->boolean());
+
+        $numberOfComments = $faker->numberBetween(0, 20);
+
+        for ($i = 0; $i < $numberOfComments; $i++) {
+            $comment = $this->createComment($conference, $faker);
+
+            $manager->persist($comment);
+        }
+
+        return $conference;
+    }
+
+    private function createComment(Conference $conference, Generator $faker): Comment
+    {
+        $comment = new Comment();
+
+        $comment->setConference($conference);
+        $comment->setAuthor($faker->firstName());
+        $comment->setEmail($faker->email());
+        $comment->setText($faker->realText());
+
+        return $comment;
     }
 }
