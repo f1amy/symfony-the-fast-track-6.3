@@ -5,6 +5,7 @@ namespace App\DataFixtures;
 use App\Entity\Admin;
 use App\Entity\Comment;
 use App\Entity\Conference;
+use App\Enum\PublishState;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
@@ -67,6 +68,21 @@ class AppFixtures extends Fixture
         $comment->setEmail($faker->email());
         $comment->setText($faker->realText());
 
+        $weightedPublishStates = $this->getWeightedPublishStates();
+        $comment->setState($faker->randomElement($weightedPublishStates));
+
         return $comment;
+    }
+
+    /**
+     * @return array<PublishState>
+     */
+    private function getWeightedPublishStates(): array
+    {
+        return array_merge(
+            array_fill(0, 3, PublishState::Submitted),
+            array_fill(0, 2, PublishState::Spam),
+            array_fill(0, 5, PublishState::Published),
+        );
     }
 }
