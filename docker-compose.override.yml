@@ -31,6 +31,10 @@ services:
       timeout: 1s
       retries: 30
 
+  cache:
+    ports:
+      - '6379:6379'
+
 ###> doctrine/doctrine-bundle ###
   database:
     ports:
