@@ -6,9 +6,22 @@ services:
     command: symfony server:start --no-tls
     volumes:
       - ./:/var/www/html
+    depends_on:
+      - database
+      - message-broker
+
+  app-consumer:
+    image: the-fast-track/app-consumer
+    command: symfony console messenger:consume async -vv
+    volumes:
+      - ./:/var/www/html
+    depends_on:
+      - database
+      - message-broker
 
   message-broker:
-    image: rabbitmq:3-alpine
+    hostname: rabbit
+    image: rabbitmq:3-management-alpine
     environment:
       RABBITMQ_DEFAULT_VHOST: rabbit
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-guest}
