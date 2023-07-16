@@ -7,6 +7,7 @@ use Symfony\Component\Notifier\Message\EmailMessage;
 use Symfony\Component\Notifier\Notification\EmailNotificationInterface;
 use Symfony\Component\Notifier\Notification\Notification;
 use Symfony\Component\Notifier\Recipient\EmailRecipientInterface;
+use Symfony\Component\Notifier\Recipient\RecipientInterface;
 
 class CommentReviewNotification extends Notification implements EmailNotificationInterface
 {
@@ -18,20 +19,6 @@ class CommentReviewNotification extends Notification implements EmailNotificatio
 
     public function asEmailMessage(EmailRecipientInterface $recipient, string $transport = null): ?EmailMessage
     {
-        /**
-         * ->htmlTemplate('emails/comment_notification.html.twig')
-         * ->to($this->adminEmail)
-         * ->context([
-         * 'comment' => [
-         * 'id' => $comment->getId(),
-         * 'author' => $comment->getAuthor(),
-         * 'email' => $comment->getEmail(),
-         * 'text' => $comment->getText(),
-         * 'state' => $comment->getStateMarking(),
-         * ],
-         * ]);
-         */
-
         $message = EmailMessage::fromNotification($this, $recipient);
         $message->transport($transport);
 
@@ -48,5 +35,21 @@ class CommentReviewNotification extends Notification implements EmailNotificatio
             ]);
 
         return $message;
+    }
+
+    public function getChannels(RecipientInterface $recipient): array
+    {
+        if ($this->isPositiveComment()) {
+            return ['email', 'chat/fakechat'];
+        }
+
+        $this->importance(Notification::IMPORTANCE_LOW);
+
+        return ['email'];
+    }
+
+    private function isPositiveComment(): int|false
+    {
+        return preg_match('{\b(great|awesome)\b}i', $this->comment->getText());
     }
 }

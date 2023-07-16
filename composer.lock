@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "61bbee4e2c835efa98fcb9ffa8d568f4",
+    "content-hash": "247bdacc5eaac55801f5b676910df716",
     "packages": [
         {
             "name": "doctrine/cache",
@@ -3527,6 +3527,85 @@
                 }
             ],
             "time": "2023-04-28T16:05:33+00:00"
+        },
+        {
+            "name": "symfony/fake-chat-notifier",
+            "version": "v6.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/fake-chat-notifier.git",
+                "reference": "56c05b4359344ea20d2653c93849ec17ce9cf22e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/fake-chat-notifier/zipball/56c05b4359344ea20d2653c93849ec17ce9cf22e",
+                "reference": "56c05b4359344ea20d2653c93849ec17ce9cf22e",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.1",
+                "symfony/http-client": "^5.4|^6.0",
+                "symfony/notifier": "^6.2.7"
+            },
+            "require-dev": {
+                "psr/log": "^1|^2|^3",
+                "symfony/mailer": "^5.4|^6.0"
+            },
+            "type": "symfony-notifier-bridge",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Notifier\\Bridge\\FakeChat\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Oskar Stark",
+                    "homepage": "https://github.com/OskarStark"
+                },
+                {
+                    "name": "Antoine Makdessi",
+                    "email": "amakdessi@me.com",
+                    "homepage": "http://antoine.makdessi.free.fr"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Fake Chat (as email or log during development) Notifier Bridge.",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "chat",
+                "development",
+                "email",
+                "notifier",
+                "symfony"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/fake-chat-notifier/tree/v6.3.0"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2023-02-17T11:07:02+00:00"
         },
         {
             "name": "symfony/filesystem",
