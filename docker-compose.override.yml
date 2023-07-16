@@ -9,6 +9,14 @@ services:
     ports:
       - '80:8000'
 
+  spa-app:
+    build:
+      context: .docker/php
+      args:
+        PHP_TYPE: cli
+    ports:
+      - '81:8000'
+
   app-consumer:
     build:
       context: .docker/php

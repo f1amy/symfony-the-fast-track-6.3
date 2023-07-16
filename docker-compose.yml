@@ -12,6 +12,14 @@ services:
       message-broker:
         condition: service_healthy
 
+  spa-app:
+    image: the-fast-track/app
+    command: symfony server:start --passthru=index.html --no-tls
+    env_file:
+      - ./spa/.env
+    volumes:
+      - ./spa/:/var/www/html
+
   app-consumer:
     image: the-fast-track/app-consumer
     command: symfony run --watch=config,src,templates,vendor symfony console messenger:consume async -vv
