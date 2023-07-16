@@ -1,5 +1,3 @@
-.PHONY: init init-tests build up down start stop restart recreate logs exec-app composer migration migrate tests
-
 init:
 	cp -u .env.local.example .env.local
 
@@ -34,8 +32,17 @@ logs:
 exec-app:
 	docker compose exec app ash
 
+exec-spa-app:
+	docker compose exec spa-app ash
+
 composer:
 	docker compose exec app symfony composer install
+
+npm-install:
+	docker compose exec app symfony run npm install
+
+npm-spa-install:
+	docker compose exec spa-app symfony run npm install
 
 migration:
 	docker compose exec app symfony console make:migration
@@ -45,12 +52,23 @@ migrate:
 
 tests: init-tests
 	docker compose exec app php bin/phpunit
+.PHONY: tests
 
 load-fixtures:
 	docker compose exec app symfony console doctrine:fixtures:load --group AppFixtures
 
+assets:
+	docker compose exec app symfony run npm run dev
+.PHONY: assets
+
 watch-assets:
 	docker compose exec app symfony run npm run watch
+
+spa-assets:
+	docker compose exec spa-app symfony run npm run dev
+
+watch-spa-assets:
+	docker compose exec spa-app symfony run --watch=webpack.config.js npm run watch
 
 clear-cache:
 	docker compose exec app symfony console cache:clear
