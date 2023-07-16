@@ -54,3 +54,6 @@ watch-assets:
 
 clear-cache:
 	docker compose exec app symfony console cache:clear
+
+messenger-retry-failed:
+	docker compose exec app symfony console messenger:failed:retry

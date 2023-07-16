@@ -4,6 +4,7 @@ namespace App\MessageHandler;
 
 use App\Entity\Comment;
 use App\Message\CommentMessage;
+use App\Notification\CommentPostedNotification;
 use App\Notification\CommentReviewNotification;
 use App\Repository\CommentRepository;
 use App\Service\ImageOptimizer;
@@ -14,6 +15,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Notifier\NotifierInterface;
+use Symfony\Component\Notifier\Recipient\Recipient;
 use Symfony\Component\Workflow\WorkflowInterface;
 
 #[AsMessageHandler]
@@ -49,6 +51,8 @@ class CommentMessageHandler
             $this->sendReviewNotification($comment, $message);
         } elseif ($this->commentStateMachine->can($comment, 'optimize')) {
             $this->resizeCommentImage($comment);
+
+            $this->sendPublishedCommentNotificationToAuthor($comment);
         } else {
             $this->logger->debug(
                 'Dropping comment message',
@@ -89,10 +93,6 @@ class CommentMessageHandler
         $this->notifier->send($notification, ...$reviewers);
     }
 
-    /**
-     * @param Comment $comment
-     * @return void
-     */
     private function resizeCommentImage(Comment $comment): void
     {
         if ($comment->getPhotoFilename()) {
@@ -102,5 +102,14 @@ class CommentMessageHandler
 
         $this->commentStateMachine->apply($comment, 'optimize');
         $this->entityManager->flush();
+    }
+
+    private function sendPublishedCommentNotificationToAuthor(Comment $comment): void
+    {
+        $conferenceSlug = $comment->getConference()->getSlug();
+        $notification = new CommentPostedNotification($comment, $conferenceSlug);
+
+        $recipient = new Recipient($comment->getEmail());
+        $this->notifier->send($notification, $recipient);
     }
 }
