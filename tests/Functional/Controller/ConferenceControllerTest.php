@@ -2,9 +2,12 @@
 
 namespace App\Tests\Functional\Controller;
 
+use App\Enum\PublishState;
+use App\Repository\CommentRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class ConferenceControllerWebTest extends WebTestCase
+class ConferenceControllerTest extends WebTestCase
 {
     public function testIndex(): void
     {
@@ -21,14 +24,20 @@ class ConferenceControllerWebTest extends WebTestCase
 
         $client->request('GET', '/conference/amsterdam-2019');
 
+        $email = 'me@automat.ed';
         $client->submitForm('Submit', [
             'comment[author]' => 'Fabien',
             'comment[text]' => 'Some feedback from an automated functional test',
-            'comment[email]' => 'me@automat.ed',
+            'comment[email]' => $email,
             'comment[photo]' => dirname(__DIR__, 2).'/public/images/under-construction.gif',
         ]);
 
         $this->assertResponseRedirects();
+
+        // simulate comment validation
+        $comment = self::getContainer()->get(CommentRepository::class)->findOneByEmail($email);
+        $comment->setState(PublishState::Published);
+        self::getContainer()->get(EntityManagerInterface::class)->flush();
 
         $client->followRedirect();
 
