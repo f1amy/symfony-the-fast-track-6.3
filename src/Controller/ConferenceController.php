@@ -7,6 +7,7 @@ use App\Entity\Conference;
 use App\Form\CommentType;
 use App\Message\CommentMessage;
 use App\Repository\CommentRepository;
+use App\Repository\ConferenceRepository;
 use App\Service\SpamChecker;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,6 +19,9 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ConferenceController extends AbstractController
 {
+    private const HOMEPAGE_CACHE_IN_SECONDS = 3600;
+    private const CONFERENCE_HEADER_CACHE_IN_SECONDS = 3600;
+
     public function __construct(
         private EntityManagerInterface $entityManager,
         private MessageBusInterface $bus,
@@ -25,9 +29,23 @@ class ConferenceController extends AbstractController
     }
 
     #[Route('/', name: 'homepage')]
-    public function index(): Response
+    public function index(ConferenceRepository $conferenceRepository): Response
     {
-        return $this->render('conference/index.html.twig');
+        $response = $this->render('conference/index.html.twig', [
+            'conferences' => $conferenceRepository->findAll(),
+        ]);
+
+        return $response->setSharedMaxAge(self::HOMEPAGE_CACHE_IN_SECONDS);
+    }
+
+    #[Route('/conference_header', name: 'conference_header')]
+    public function conferenceHeader(ConferenceRepository $conferenceRepository): Response
+    {
+        $response = $this->render('conference/header.html.twig', [
+            'conferences' => $conferenceRepository->findAll(),
+        ]);
+
+        return $response->setSharedMaxAge(self::CONFERENCE_HEADER_CACHE_IN_SECONDS);
     }
 
     #[Route('/conference/{slug}', name: 'conference')]
