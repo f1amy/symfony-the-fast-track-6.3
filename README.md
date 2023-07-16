@@ -9,7 +9,9 @@ https://symfony.com/doc/6.2/the-fast-track/en/index.html
 make init
 make build
 make up
+make composer
 make migrate
+make load-fixtures
 ```
 
 ## Admin
