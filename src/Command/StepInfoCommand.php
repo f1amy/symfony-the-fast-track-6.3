@@ -12,7 +12,7 @@ use Symfony\Contracts\Cache\CacheInterface;
 
 #[AsCommand(
     name: 'app:step:info',
-    description: 'Show Git tag name attached to the current Git commit.',
+    description: 'Show Git tag name attached to the current Git commit',
 )]
 class StepInfoCommand extends Command
 {
