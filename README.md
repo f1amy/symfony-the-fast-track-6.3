@@ -46,5 +46,6 @@ URL: [http://localhost/login](http://localhost/login)
 
 ## Infrastructure
 - RabbitMQ Management UI: [http://localhost:5672](http://localhost:5672)
-- Postgres: [http://localhost:5432](http://localhost:5432)
+- Postgres: Port 5432
 - Mailcatcher UI: [http://localhost:1080](http://localhost:1080)
+- Redis: Port 6379
