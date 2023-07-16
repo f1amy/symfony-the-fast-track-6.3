@@ -14,7 +14,7 @@ services:
 
   app-consumer:
     image: the-fast-track/app-consumer
-    command: symfony console messenger:consume async -vv
+    command: symfony run --watch=config,src,templates,vendor symfony console messenger:consume async -vv
     volumes:
       - ./:/var/www/html
     depends_on:
