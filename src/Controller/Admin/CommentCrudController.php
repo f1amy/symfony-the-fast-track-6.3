@@ -3,16 +3,19 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Comment;
+use App\Enum\PublishState;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
+use Symfony\Component\Form\Extension\Core\Type\EnumType;
 
 class CommentCrudController extends AbstractCrudController
 {
@@ -45,6 +48,12 @@ class CommentCrudController extends AbstractCrudController
             ->setBasePath('/uploads/photos')
             ->setLabel('Photo')
             ->onlyOnIndex();
+        yield ChoiceField::new('state')
+            ->setFormType(EnumType::class)
+            ->setFormTypeOptions([
+                'class' => PublishState::class,
+                'choices' => PublishState::cases(),
+            ]);
 
         if (Crud::PAGE_EDIT === $pageName) {
             $currentYear = (int) date('Y');

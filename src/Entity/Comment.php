@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\PublishState;
 use App\Repository\CommentRepository;
 use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
@@ -39,6 +40,9 @@ class Comment
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $photoFilename = null;
+
+    #[ORM\Column(length: 255, enumType: PublishState::class, options: ['default' => PublishState::Submitted])]
+    private ?PublishState $state = PublishState::Submitted;
 
     public function __toString(): string
     {
@@ -124,6 +128,18 @@ class Comment
     public function setPhotoFilename(string $photoFilename): static
     {
         $this->photoFilename = $photoFilename;
+
+        return $this;
+    }
+
+    public function getState(): ?PublishState
+    {
+        return $this->state;
+    }
+
+    public function setState(PublishState $state): static
+    {
+        $this->state = $state;
 
         return $this;
     }
