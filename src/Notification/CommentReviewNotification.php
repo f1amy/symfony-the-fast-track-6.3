@@ -15,6 +15,7 @@ class CommentReviewNotification extends Notification implements EmailNotificatio
 {
     public function __construct(
         private Comment $comment,
+        private string $reviewUrl,
     ) {
         parent::__construct('New comment posted');
     }
@@ -48,7 +49,8 @@ class CommentReviewNotification extends Notification implements EmailNotificatio
         $message = ChatMessage::fromNotification($this);
         $message->transport($transport);
 
-        $message->subject($this->getSubject());
+        $subject = $this->composeChatSubject();
+        $message->subject($subject);
 
         return $message;
     }
@@ -67,5 +69,17 @@ class CommentReviewNotification extends Notification implements EmailNotificatio
     private function isPositiveComment(): int|false
     {
         return preg_match('{\b(great|awesome)\b}i', $this->comment->getText());
+    }
+
+    private function composeChatSubject(): string
+    {
+        $rejectUrl = sprintf('%s?reject=1', $this->reviewUrl);
+
+        return sprintf(
+            '%s, Accept: %s, Reject: %s',
+            $this->getSubject(),
+            $this->reviewUrl,
+            $rejectUrl
+        );
     }
 }

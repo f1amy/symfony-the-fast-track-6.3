@@ -46,7 +46,7 @@ class CommentMessageHandler
             $this->commentStateMachine->can($comment, 'publish')
             || $this->commentStateMachine->can($comment, 'publish_ham')
         ) {
-            $this->sendReviewNotification($comment);
+            $this->sendReviewNotification($comment, $message);
         } elseif ($this->commentStateMachine->can($comment, 'optimize')) {
             $this->resizeCommentImage($comment);
         } else {
@@ -81,9 +81,9 @@ class CommentMessageHandler
         $this->bus->dispatch($message);
     }
 
-    private function sendReviewNotification(Comment $comment): void
+    private function sendReviewNotification(Comment $comment, CommentMessage $message): void
     {
-        $notification = new CommentReviewNotification($comment);
+        $notification = new CommentReviewNotification($comment, $message->getReviewUrl());
         $reviewers = $this->notifier->getAdminRecipients();
 
         $this->notifier->send($notification, ...$reviewers);
