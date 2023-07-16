@@ -48,3 +48,9 @@ tests: init-tests
 
 load-fixtures:
 	docker compose exec app symfony console doctrine:fixtures:load --group AppFixtures
+
+watch-assets:
+	docker compose exec app symfony run npm run watch
+
+clear-cache:
+	docker compose exec app symfony console cache:clear

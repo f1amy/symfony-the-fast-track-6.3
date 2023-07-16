@@ -6,7 +6,7 @@ RUN install-php-extensions zip redis amqp xsl gd intl pdo_pgsql xdebug opcache
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-RUN apk add --no-cache bash \
+RUN apk add --no-cache bash nodejs npm \
     && curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.alpine.sh' | bash \
     && apk add --no-cache symfony-cli git
 
