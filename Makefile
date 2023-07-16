@@ -29,7 +29,7 @@ restart:
 recreate: down up
 
 logs:
-	docker compose logs
+	docker compose logs -f
 
 exec-app:
 	docker compose exec app ash
