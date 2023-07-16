@@ -3,13 +3,15 @@
 namespace App\Notification;
 
 use App\Entity\Comment;
+use Symfony\Component\Notifier\Message\ChatMessage;
 use Symfony\Component\Notifier\Message\EmailMessage;
+use Symfony\Component\Notifier\Notification\ChatNotificationInterface;
 use Symfony\Component\Notifier\Notification\EmailNotificationInterface;
 use Symfony\Component\Notifier\Notification\Notification;
 use Symfony\Component\Notifier\Recipient\EmailRecipientInterface;
 use Symfony\Component\Notifier\Recipient\RecipientInterface;
 
-class CommentReviewNotification extends Notification implements EmailNotificationInterface
+class CommentReviewNotification extends Notification implements EmailNotificationInterface, ChatNotificationInterface
 {
     public function __construct(
         private Comment $comment,
@@ -33,6 +35,20 @@ class CommentReviewNotification extends Notification implements EmailNotificatio
                     'state' => $this->comment->getStateMarking(),
                 ],
             ]);
+
+        return $message;
+    }
+
+    public function asChatMessage(RecipientInterface $recipient, string $transport = null): ?ChatMessage
+    {
+        if ('fakechat' !== $transport) {
+            return null;
+        }
+
+        $message = ChatMessage::fromNotification($this);
+        $message->transport($transport);
+
+        $message->subject($this->getSubject());
 
         return $message;
     }
