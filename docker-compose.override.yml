@@ -33,5 +33,7 @@ services:
 
 ###> symfony/mailer ###
   mailer:
-    ports: ["1025", "1080"]
+    ports:
+      - '1025:1025'
+      - '1080:1080'
 ###< symfony/mailer ###
