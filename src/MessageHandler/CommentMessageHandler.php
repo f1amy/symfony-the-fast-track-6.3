@@ -5,6 +5,7 @@ namespace App\MessageHandler;
 use App\Entity\Comment;
 use App\Message\CommentMessage;
 use App\Repository\CommentRepository;
+use App\Service\ImageOptimizer;
 use App\Service\SpamChecker;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -26,7 +27,9 @@ class CommentMessageHandler
         private MessageBusInterface $bus,
         private WorkflowInterface $commentStateMachine,
         private MailerInterface $mailer,
-        #[Autowire('%admin_email%')] private string $adminEmail,
+        #[Autowire('%app.admin_email%')] private string $adminEmail,
+        private ImageOptimizer $imageOptimizer,
+        #[Autowire('%app.photo_dir%')] private string $photoDir,
         private LoggerInterface $logger,
     ) {
     }
@@ -46,6 +49,8 @@ class CommentMessageHandler
             || $this->commentStateMachine->can($comment, 'publish_ham')
         ) {
             $this->sendReviewNotification($comment);
+        } elseif ($this->commentStateMachine->can($comment, 'optimize')) {
+            $this->resizeCommentImage($comment);
         } else {
             $this->logger->debug(
                 'Dropping comment message',
@@ -99,5 +104,20 @@ class CommentMessageHandler
             ]);
 
         $this->mailer->send($notification);
+    }
+
+    /**
+     * @param Comment $comment
+     * @return void
+     */
+    private function resizeCommentImage(Comment $comment): void
+    {
+        if ($comment->getPhotoFilename()) {
+            $filename = sprintf('%s/%s', $this->photoDir, $comment->getPhotoFilename());
+            $this->imageOptimizer->resize($filename);
+        }
+
+        $this->commentStateMachine->apply($comment, 'optimize');
+        $this->entityManager->flush();
     }
 }

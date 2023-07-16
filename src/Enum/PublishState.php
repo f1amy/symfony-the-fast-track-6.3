@@ -9,5 +9,6 @@ enum PublishState: string
     case PotentialSpam = 'potential_spam';
     case Spam = 'spam';
     case Published = 'published';
+    case Ready = 'ready';
     case Rejected = 'rejected';
 }

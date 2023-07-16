@@ -2,6 +2,6 @@ framework:
     mailer:
         dsn: '%env(MAILER_DSN)%'
         envelope:
-            sender: '%admin_email%'
+            sender: '%app.admin_email%'
         headers:
-            From: 'Admin of TheFastTrack <%admin_email%>'
+            From: 'Admin of TheFastTrack <%app.admin_email%>'
