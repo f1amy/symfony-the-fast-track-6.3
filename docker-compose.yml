@@ -7,6 +7,15 @@ services:
     volumes:
       - ./:/var/www/html
 
+  message-broker:
+    image: rabbitmq:3-alpine
+    environment:
+      RABBITMQ_DEFAULT_VHOST: rabbit
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-guest}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-guest}
+    volumes:
+      - message-broker_data:/var/lib/rabbitmq
+
 ###> doctrine/doctrine-bundle ###
   database:
     image: postgres:${POSTGRES_VERSION:-15}-alpine
@@ -27,6 +36,7 @@ services:
 ###< symfony/mailer ###
 
 volumes:
+  message-broker_data:
 ###> doctrine/doctrine-bundle ###
   database_data:
 ###< doctrine/doctrine-bundle ###
