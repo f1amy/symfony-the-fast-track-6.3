@@ -34,6 +34,10 @@ make spa-assets
 make tests
 ```
 
+## API
+- REST/OpenAPI: [http://localhost/api](http://localhost/api)
+- GraphQL: [http://localhost/api/graphql](http://localhost/api/graphql)
+
 ## Admin
 URL: [http://localhost/login](http://localhost/login)
 
