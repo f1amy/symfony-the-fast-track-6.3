@@ -143,4 +143,16 @@ class Comment
 
         return $this;
     }
+
+    public function getStateMarking(): ?string
+    {
+        return $this->state?->value;
+    }
+
+    public function setStateMarking(string $stateMarking): static
+    {
+        $this->state = PublishState::from($stateMarking);
+
+        return $this;
+    }
 }
