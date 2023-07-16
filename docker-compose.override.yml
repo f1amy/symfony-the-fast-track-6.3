@@ -19,6 +19,11 @@ services:
     ports:
       - '5672:5672'
       - '1081:15672'
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "check_running" ]
+      interval: 5s
+      timeout: 5s
+      retries: 3
 
 ###> doctrine/doctrine-bundle ###
   database:

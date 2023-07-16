@@ -7,8 +7,10 @@ services:
     volumes:
       - ./:/var/www/html
     depends_on:
-      - database
-      - message-broker
+      database:
+        condition: service_started
+      message-broker:
+        condition: service_healthy
 
   app-consumer:
     image: the-fast-track/app-consumer
@@ -16,8 +18,10 @@ services:
     volumes:
       - ./:/var/www/html
     depends_on:
-      - database
-      - message-broker
+      database:
+        condition: service_started
+      message-broker:
+        condition: service_healthy
 
   message-broker:
     hostname: rabbit
