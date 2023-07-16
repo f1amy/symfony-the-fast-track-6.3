@@ -4,17 +4,16 @@ namespace App\MessageHandler;
 
 use App\Entity\Comment;
 use App\Message\CommentMessage;
+use App\Notification\CommentReviewNotification;
 use App\Repository\CommentRepository;
 use App\Service\ImageOptimizer;
 use App\Service\SpamChecker;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Bridge\Twig\Mime\NotificationEmail;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
-use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Notifier\NotifierInterface;
 use Symfony\Component\Workflow\WorkflowInterface;
 
 #[AsMessageHandler]
@@ -26,8 +25,7 @@ class CommentMessageHandler
         private CommentRepository $commentRepository,
         private MessageBusInterface $bus,
         private WorkflowInterface $commentStateMachine,
-        private MailerInterface $mailer,
-        #[Autowire('%app.admin_email%')] private string $adminEmail,
+        private NotifierInterface $notifier,
         private ImageOptimizer $imageOptimizer,
         #[Autowire('%app.photo_dir%')] private string $photoDir,
         private LoggerInterface $logger,
@@ -83,27 +81,12 @@ class CommentMessageHandler
         $this->bus->dispatch($message);
     }
 
-    /**
-     * @throws TransportExceptionInterface
-     */
     private function sendReviewNotification(Comment $comment): void
     {
-        $notification = new NotificationEmail();
+        $notification = new CommentReviewNotification($comment);
+        $reviewers = $this->notifier->getAdminRecipients();
 
-        $notification->subject('New comment posted')
-            ->htmlTemplate('emails/comment_notification.html.twig')
-            ->to($this->adminEmail)
-            ->context([
-                'comment' => [
-                    'id' => $comment->getId(),
-                    'author' => $comment->getAuthor(),
-                    'email' => $comment->getEmail(),
-                    'text' => $comment->getText(),
-                    'state' => $comment->getStateMarking(),
-                ],
-            ]);
-
-        $this->mailer->send($notification);
+        $this->notifier->send($notification, ...$reviewers);
     }
 
     /**
